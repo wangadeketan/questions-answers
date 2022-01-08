@@ -231,6 +231,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\MySettingProvider.cs" />
+    <Compile Include="Event\ActivityWriter.cs" />
+    <Compile Include="Event\QuestionCreatedEvent.cs" />
+    <Compile Include="Event\QuestionEventData.cs" />
     <Compile Include="Questions\Dto\CreateQuestionInput.cs" />
     <Compile Include="Questions\Dto\AnswerDto.cs" />
     <Compile Include="Questions\Dto\GetQuestionsInput.cs" />

@@ -10,11 +10,13 @@ using Abp.AutoMapper;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.Events.Bus;
 using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
 using ModuleZeroSampleProject.Authorization;
 using ModuleZeroSampleProject.Configuration;
+using ModuleZeroSampleProject.Event;
 using ModuleZeroSampleProject.Questions.Dto;
 using ModuleZeroSampleProject.Users;
 
@@ -29,6 +31,8 @@ namespace ModuleZeroSampleProject.Questions
         private readonly IRepository<Vote, long> _voteRepository;
         private readonly QuestionDomainService _questionDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+
+        public IEventBus EventBus { get; set; }
 
         public QuestionAppService(IRepository<Question> questionRepository, IRepository<Answer> answerRepository, IRepository<User, long> userRepository, QuestionDomainService questionDomainService, IUnitOfWorkManager unitOfWorkManager, IRepository<Vote, long> voteRepository)
         {
@@ -66,7 +70,8 @@ namespace ModuleZeroSampleProject.Questions
         [AbpAuthorize(PermissionNames.Pages_Questions_Create)] //An example of permission checking
         public async Task CreateQuestion(CreateQuestionInput input)
         {
-            await _questionRepository.InsertAsync(new Question(input.Title, input.Text));
+            var question = await _questionRepository.InsertAsync(new Question(input.Title, input.Text));
+            EventBus.Trigger(new QuestionCreatedEvent { QuestionsCreated = question });
         }
 
         public GetQuestionOutput GetQuestion(GetQuestionInput input)
